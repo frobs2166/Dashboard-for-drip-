@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Founder" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#070d14" />
+  <title>Founder Dashboard</title>
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='38' fill='%23070d14'/%3E%3Ccircle cx='90' cy='90' r='50' fill='none' stroke='%2322d3ee' stroke-width='5'/%3E%3Cpolygon points='90,46 101,83 90,76 79,83' fill='%2322d3ee'/%3E%3Cpolygon points='90,134 79,97 90,104 101,97' fill='%23334155'/%3E%3Ccircle cx='90' cy='90' r='6' fill='%2322d3ee'/%3E%3C/svg%3E" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #070d14; --bg2: #0f1923; --border: #1e293b;
+      --cyan: #22d3ee; --blue: #0ea5e9; --indigo: #6366f1;
+      --purple: #a855f7; --amber: #f59e0b;
+      --slate: #64748b; --slate2: #475569; --slate3: #334155;
+      --text: #e2e8f0; --text-mid: #94a3b8; --text-dim: #64748b;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+    }
+    html { background: var(--bg); }
+    body {
+      background: var(--bg);
+      font-family: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
+      color: var(--text); -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-left: var(--safe-left); padding-right: var(--safe-right);
+      padding-bottom: calc(var(--safe-bottom) + 48px);
+    }
+    .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate2); margin-bottom: 6px; }
+    .card-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.01em; margin: 0 0 16px; }
+    .header { background: linear-gradient(180deg, #0b1829 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); padding: calc(var(--safe-top) + 22px) 16px 18px; }
+    .header-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; gap: 8px; }
+    .app-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate2); }
+    .last-updated { font-size: 10px; color: var(--slate3); letter-spacing: 0.04em; }
+    .origin-box { display: flex; gap: 11px; align-items: flex-start; background: rgba(34,211,238,0.055); border: 1px solid rgba(34,211,238,0.14); border-radius: 12px; padding: 13px 15px; }
+    .origin-star { font-size: 15px; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+    .origin-text { font-size: 13px; line-height: 1.65; font-style: italic; color: #7dd3fc; letter-spacing: 0.01em; }
+    .body { padding: 16px 14px 0; display: grid; gap: 14px; }
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 18px 16px; position: relative; overflow: hidden; }
+    .card-stripe { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 10px; margin-bottom: 20px; }
+    .stat-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate2); margin-bottom: 5px; }
+    .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums; line-height: 1; }
+    .bar-header { display: flex; justify-content: space-between; margin-bottom: 7px; }
+    .bar-label-text { font-size: 12px; color: var(--text-dim); }
+    .bar-pct-text { font-size: 12px; font-weight: 600; color: var(--cyan); }
+    .bar-track { background: var(--border); border-radius: 99px; overflow: hidden; }
+    .bar-fill { border-radius: 99px; transition: width 0.5s ease; height: 100%; }
+    .area-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+    .area-name { font-size: 12px; color: var(--text-mid); }
+    .area-pct { font-size: 12px; font-variant-numeric: tabular-nums; }
+    .area-block { margin-bottom: 10px; }
+    .area-block:last-child { margin-bottom: 0; }
+    .check-btn { display: flex; align-items: center; gap: 11px; width: 100%; background: none; border: none; cursor: pointer; padding: 10px 0; text-align: left; -webkit-tap-highlight-color: transparent; border-bottom: 1px solid rgba(30,41,59,0.5); }
+    .check-btn:last-child { border-bottom: none; padding-bottom: 0; }
+    .check-btn:first-child { padding-top: 0; }
+    .check-box { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .check-box.off { border: 1.5px solid var(--slate3); background: transparent; }
+    .check-box.on { border: none; background: var(--cyan); }
+    .check-text { font-size: 14px; line-height: 1.4; transition: color 0.15s; }
+    .check-text.off { color: var(--text); }
+    .check-text.on { color: var(--slate2); text-decoration: line-through; }
+    .growth-item { margin-bottom: 18px; }
+    .growth-item:last-child { margin-bottom: 0; }
+    .growth-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+    .growth-name { font-size: 13px; color: var(--text-mid); }
+    .growth-val { font-size: 13px; font-weight: 600; color: var(--cyan); font-variant-numeric: tabular-nums; }
+    .milestone-row { display: flex; gap: 5px; }
+    .milestone-col { flex: 1; text-align: center; }
+    .milestone-pip { height: 5px; border-radius: 99px; margin-bottom: 5px; }
+    .milestone-lbl { font-size: 9px; color: var(--slate2); letter-spacing: 0.03em; }
+    .outcome-item { margin-bottom: 14px; }
+    .outcome-item:last-child { margin-bottom: 0; }
+    .outcome-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .outcome-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .outcome-note { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .outcome-pct { font-size: 14px; font-weight: 700; flex-shrink: 0; margin-left: 12px; padding-top: 1px; }
+    .outcome-info { margin-top: 16px; padding: 12px 13px; border-radius: 10px; background: rgba(34,211,238,0.055); border: 1px solid rgba(34,211,238,0.12); font-size: 12px; line-height: 1.65; color: var(--text-mid); }
+    .two-col { display: grid; gap: 14px; }
+    .next-unlock { background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(99,102,241,0.06)); border: 1px solid rgba(34,211,238,0.16); border-radius: 16px; padding: 17px 15px; }
+    .next-unlock .eyebrow { margin-bottom: 9px; }
+    .next-unlock-text { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .hl-cyan { color: var(--cyan); font-weight: 600; }
+    .hl-slate { color: var(--text-mid); font-style: italic; }
+    .check-btn:active { opacity: 0.7; }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="header-meta">
+    <span class="app-label">Founder Dashboard</span>
+    <span class="last-updated" id="ts"></span>
+  </div>
+  <div class="origin-box">
+    <span class="origin-star">✦</span>
+    <p class="origin-text">The idea arrived exactly 90 days before my first overseas trip in over 5 years.</p>
+  </div>
+</div>
+<div class="body">
+  <div class="card">
+    <div class="card-stripe" style="background:linear-gradient(90deg,#22d3ee,transparent)"></div>
+    <p class="eyebrow">Overall Progress</p>
+    <div class="stat-grid">
+      <div><p class="stat-label">Completion</p><p class="stat-value" id="s-completion">—</p></div>
+      <div><p class="stat-label">Stage</p><p class="stat-value" style="font-size:20px;padding-top:3px">Building</p></div>
+      <div><p class="stat-label">Days Building</p><p class="stat-value" id="s-since">—</p></div>
+      <div><p class="stat-label">Days to Launch</p><p class="stat-value" id="s-until">—</p></div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="bar-header"><span class="bar-label-text">Overall</span><span class="bar-pct-text" id="overall-lbl">—</span></div>
+      <div class="bar-track" style="height:8px"><div class="bar-fill" id="overall-bar" style="background:#22d3ee"></div></div>
+    </div>
+    <div id="area-bars"></div>
+  </div>
+  <div class="card">
+    <div class="card-stripe" style="background:linear-gradient(90deg,#a855f7,transparent)"></div>
+    <p class="eyebrow">Founder Odds</p>
+    <h2 class="card-title">Outcome Probability</h2>
+    <div id="outcome-list"></div>
+    <div class="outcome-info">These odds shift as execution improves. The fastest way to cut failure risk is a working prototype, real beta users, and proof that people return for daily travel ideas.</div>
+  </div>
+  <div class="card">
+    <div class="card-stripe" style="background:linear-gradient(90deg,#f59e0b,transparent)"></div>
+    <p class="eyebrow">Today's Focus</p>
+    <h2 class="card-title" id="today-title"></h2>
+    <div id="today-list"></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-stripe" style="background:linear-gradient(90deg,#0ea5e9,transparent)"></div>
+      <p class="eyebrow">Product</p>
+      <h2 class="card-title" id="product-title"></h2>
+      <div id="product-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-stripe" style="background:linear-gradient(90deg,#6366f1,transparent)"></div>
+      <p class="eyebrow">Business</p>
+      <h2 class="card-title" id="business-title"></h2>
+      <div id="business-list"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-stripe" style="background:linear-gradient(90deg,#22d3ee,transparent)"></div>
+    <p class="eyebrow">Growth</p>
+    <h2 class="card-title">Milestones</h2>
+    <div id="growth-list"></div>
+  </div>
+  <div class="next-unlock">
+    <p class="eyebrow">Next Unlock</p>
+    <p class="next-unlock-text">The biggest jump won't come from more planning — it will come from the moment Claude produces <span class="hl-cyan">5 travel recommendations for a sample trip</span>. Once that works, you'll have crossed from <span class="hl-slate">idea</span> into <span class="hl-cyan">product</span>.</p>
+  </div>
+</div>
+<script>
+const AREA_DATA=[{name:"Idea & Vision",pct:95,color:"#22d3ee"},{name:"MVP Definition",pct:70,color:"#22d3ee"},{name:"Design",pct:35,color:"#0ea5e9"},{name:"Front End",pct:25,color:"#0ea5e9"},{name:"AI System",pct:10,color:"#6366f1"},{name:"Backend",pct:5,color:"#6366f1"},{name:"Revenue Planning",pct:40,color:"#0ea5e9"},{name:"Validation",pct:0,color:"#475569"}];
+const OVERALL=Math.round(AREA_DATA.reduce((s,r)=>s+r.pct,0)/AREA_DATA.length);
+const OUTCOMES=[{name:"Side Business",pct:35,note:"$500–$2k/month",color:"#22d3ee"},{name:"Minor Business",pct:25,note:"$2k–$10k/month",color:"#0ea5e9"},{name:"Major Business",pct:12,note:"$10k–$50k/month",color:"#6366f1"},{name:"Million Dollar App",pct:5,note:"$1M+ valuation",color:"#a855f7"},{name:"Multi-Million App",pct:2,note:"$5M+ valuation",color:"#f59e0b"},{name:"Failure / Abandoned",pct:21,note:"Does not launch or no traction",color:"#64748b"}];
+const GROWTH=[{name:"Users",steps:[0,100,1000,10000],val:0,fmt:n=>n.toLocaleString()},{name:"Paying Users",steps:[0,10,100,1000],val:0,fmt:n=>n.toLocaleString()},{name:"MRR",steps:[0,1000,10000,100000],val:0,fmt:n=>n===0?"$0":"$"+(n>=1000?n/1000+"k":n)}];
+const DEF_PRODUCT=[{label:"MVP Defined",done:true},{label:"Prototype Functional",done:false},{label:"AI Recommendations Working",done:false},{label:"User Accounts",done:false},{label:"Beta Ready",done:false}];
+const DEF_BUSINESS=[{label:"Pricing Selected",done:false},{label:"Affiliate Partners",done:false},{label:"Terms & Privacy",done:false},{label:"Revenue Tracking",done:false}];
+const DEF_TODAY=[{label:"Make prototype functional",done:false},{label:"Test sample trip input",done:false},{label:"Generate 5 travel ideas",done:false},{label:"Improve mobile layout",done:false}];
+function ls(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+let product=ls("fd_product",DEF_PRODUCT),business=ls("fd_business",DEF_BUSINESS),today=ls("fd_today",DEF_TODAY);
+const DAY=86400000,start=new Date("2026-03-23"),launch=new Date("2026-09-21"),now=new Date();
+document.getElementById("s-since").textContent=Math.floor((now-start)/DAY);
+document.getElementById("s-until").textContent=Math.floor((launch-now)/DAY);
+document.getElementById("s-completion").textContent=OVERALL+"%";
+document.getElementById("overall-lbl").textContent=OVERALL+"%";
+document.getElementById("overall-bar").style.width=OVERALL+"%";
+function stamp(){const d=new Date().toLocaleString("en-GB",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});sv("fd_ts",d);document.getElementById("ts").textContent="Updated "+d;}
+(()=>{const v=ls("fd_ts",null);if(v)document.getElementById("ts").textContent="Updated "+v;})();
+const areaEl=document.getElementById("area-bars");
+AREA_DATA.forEach(r=>{areaEl.insertAdjacentHTML("beforeend",`<div class="area-block"><div class="area-row"><span class="area-name">${r.name}</span><span class="area-pct" style="color:${r.pct>0?'#64748b':'#334155'}">${r.pct}%</span></div><div class="bar-track" style="height:4px"><div class="bar-fill" style="background:${r.color};width:${r.pct}%"></div></div></div>`);});
+const outcomeEl=document.getElementById("outcome-list");
+OUTCOMES.forEach(r=>{outcomeEl.insertAdjacentHTML("beforeend",`<div class="outcome-item"><div class="outcome-header"><div><div class="outcome-name">${r.name}</div><div class="outcome-note">${r.note}</div></div><span class="outcome-pct" style="color:${r.color}">${r.pct}%</span></div><div class="bar-track" style="height:5px"><div class="bar-fill" style="background:${r.color};width:${r.pct}%"></div></div></div>`);});
+const growthEl=document.getElementById("growth-list");
+GROWTH.forEach(r=>{const pips=r.steps.map((s,i)=>`<div class="milestone-col"><div class="milestone-pip" style="background:${i===0?'#22d3ee':'#1e293b'}"></div><span class="milestone-lbl">${r.fmt(s)}</span></div>`).join("");growthEl.insertAdjacentHTML("beforeend",`<div class="growth-item"><div class="growth-header"><span class="growth-name">${r.name}</span><span class="growth-val">${r.fmt(r.val)}</span></div><div class="milestone-row">${pips}</div></div>`);});
+const CHECK_SVG=`<svg width="12" height="9" viewBox="0 0 12 9" fill="none"><path d="M1 4L4.5 7.5L11 1" stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function renderList(cId,tId,items,titleFn,onToggle){const c=document.getElementById(cId),t=document.getElementById(tId),done=items.filter(i=>i.done).length;t.textContent=titleFn(done,items.length);c.innerHTML="";items.forEach((item,idx)=>{const btn=document.createElement("button");btn.className="check-btn";btn.innerHTML=`<span class="check-box ${item.done?'on':'off'}">${item.done?CHECK_SVG:""}</span><span class="check-text ${item.done?'on':'off'}">${item.label}</span>`;btn.addEventListener("click",()=>{onToggle(idx);stamp();});c.appendChild(btn);});}
+function renderAll(){
+  renderList("today-list","today-title",today,(d,t)=>`${d} / ${t} done`,i=>{today[i].done=!today[i].done;sv("fd_today",today);renderAll();});
+  renderList("product-list","product-title",product,(d,t)=>`${d} / ${t} complete`,i=>{product[i].done=!product[i].done;sv("fd_product",product);renderAll();});
+  renderList("business-list","business-title",business,(d,t)=>`${d} / ${t} complete`,i=>{business[i].done=!business[i].done;sv("fd_business",business);renderAll();});
+}
+renderAll();
+</script>
+</body>
+</html>

@@ -24,14 +24,7 @@
       --safe-right: env(safe-area-inset-right, 0px);
     }
     html { background: var(--bg); }
-    body {
-      background: var(--bg);
-      font-family: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif;
-      color: var(--text); -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      padding-left: var(--safe-left); padding-right: var(--safe-right);
-      padding-bottom: calc(var(--safe-bottom) + 48px);
-    }
+    body { background: var(--bg); font-family: -apple-system, 'SF Pro Text', 'Inter', system-ui, sans-serif; color: var(--text); -webkit-font-smoothing: antialiased; min-height: 100vh; padding-left: var(--safe-left); padding-right: var(--safe-right); padding-bottom: calc(var(--safe-bottom) + 48px); }
     .eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate2); margin-bottom: 6px; }
     .card-title { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.01em; margin: 0 0 16px; }
     .header { background: linear-gradient(180deg, #0b1829 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); padding: calc(var(--safe-top) + 22px) 16px 18px; }
@@ -89,6 +82,7 @@
     .hl-cyan { color: var(--cyan); font-weight: 600; }
     .hl-slate { color: var(--text-mid); font-style: italic; }
     .check-btn:active { opacity: 0.7; }
+    .update-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(34,211,238,0.12); color: var(--cyan); border-radius: 4px; padding: 2px 6px; margin-left: 8px; vertical-align: middle; }
   </style>
 </head>
 <body>
@@ -105,10 +99,10 @@
 <div class="body">
   <div class="card">
     <div class="card-stripe" style="background:linear-gradient(90deg,#22d3ee,transparent)"></div>
-    <p class="eyebrow">Overall Progress</p>
+    <p class="eyebrow">Overall Progress <span class="update-badge">Updated 21 Jun</span></p>
     <div class="stat-grid">
       <div><p class="stat-label">Completion</p><p class="stat-value" id="s-completion">—</p></div>
-      <div><p class="stat-label">Stage</p><p class="stat-value" style="font-size:20px;padding-top:3px">Building</p></div>
+      <div><p class="stat-label">Stage</p><p class="stat-value" style="font-size:18px;padding-top:4px">Building</p></div>
       <div><p class="stat-label">Days Building</p><p class="stat-value" id="s-since">—</p></div>
       <div><p class="stat-label">Days to Launch</p><p class="stat-value" id="s-until">—</p></div>
     </div>
@@ -120,10 +114,10 @@
   </div>
   <div class="card">
     <div class="card-stripe" style="background:linear-gradient(90deg,#a855f7,transparent)"></div>
-    <p class="eyebrow">Founder Odds</p>
+    <p class="eyebrow">Founder Odds <span class="update-badge">Updated 21 Jun</span></p>
     <h2 class="card-title">Outcome Probability</h2>
     <div id="outcome-list"></div>
-    <div class="outcome-info">These odds shift as execution improves. The fastest way to cut failure risk is a working prototype, real beta users, and proof that people return for daily travel ideas.</div>
+    <div class="outcome-info">Live infrastructure + auto-deploy dropped failure odds from 21% → 16%. Next drop comes when picks actually generate. The fastest way to shift these odds further: turn on the Anthropic API key.</div>
   </div>
   <div class="card">
     <div class="card-stripe" style="background:linear-gradient(90deg,#f59e0b,transparent)"></div>
@@ -153,17 +147,17 @@
   </div>
   <div class="next-unlock">
     <p class="eyebrow">Next Unlock</p>
-    <p class="next-unlock-text">The biggest jump won't come from more planning — it will come from the moment Claude produces <span class="hl-cyan">5 travel recommendations for a sample trip</span>. Once that works, you'll have crossed from <span class="hl-slate">idea</span> into <span class="hl-cyan">product</span>.</p>
+    <p class="next-unlock-text">The plumbing is excellent — the water isn't turned on yet. Add your <span class="hl-cyan">Anthropic API key to Railway</span> and confirm picks actually generate. That single step takes Drip from <span class="hl-slate">impressive shell</span> to <span class="hl-cyan">real product</span>.</p>
   </div>
 </div>
 <script>
-const AREA_DATA=[{name:"Idea & Vision",pct:95,color:"#22d3ee"},{name:"MVP Definition",pct:70,color:"#22d3ee"},{name:"Design",pct:35,color:"#0ea5e9"},{name:"Front End",pct:25,color:"#0ea5e9"},{name:"AI System",pct:10,color:"#6366f1"},{name:"Backend",pct:5,color:"#6366f1"},{name:"Revenue Planning",pct:40,color:"#0ea5e9"},{name:"Validation",pct:0,color:"#475569"}];
+const AREA_DATA=[{name:"Idea & Vision",pct:95,color:"#22d3ee"},{name:"MVP Definition",pct:75,color:"#22d3ee"},{name:"Design",pct:40,color:"#0ea5e9"},{name:"Front End",pct:75,color:"#0ea5e9"},{name:"AI System",pct:15,color:"#6366f1"},{name:"Backend",pct:80,color:"#22d3ee"},{name:"Revenue Planning",pct:40,color:"#0ea5e9"},{name:"Validation",pct:0,color:"#475569"}];
 const OVERALL=Math.round(AREA_DATA.reduce((s,r)=>s+r.pct,0)/AREA_DATA.length);
-const OUTCOMES=[{name:"Side Business",pct:35,note:"$500–$2k/month",color:"#22d3ee"},{name:"Minor Business",pct:25,note:"$2k–$10k/month",color:"#0ea5e9"},{name:"Major Business",pct:12,note:"$10k–$50k/month",color:"#6366f1"},{name:"Million Dollar App",pct:5,note:"$1M+ valuation",color:"#a855f7"},{name:"Multi-Million App",pct:2,note:"$5M+ valuation",color:"#f59e0b"},{name:"Failure / Abandoned",pct:21,note:"Does not launch or no traction",color:"#64748b"}];
+const OUTCOMES=[{name:"Side Business",pct:38,note:"$500–$2k/month",color:"#22d3ee"},{name:"Minor Business",pct:26,note:"$2k–$10k/month",color:"#0ea5e9"},{name:"Major Business",pct:13,note:"$10k–$50k/month",color:"#6366f1"},{name:"Million Dollar App",pct:5,note:"$1M+ valuation",color:"#a855f7"},{name:"Multi-Million App",pct:2,note:"$5M+ valuation",color:"#f59e0b"},{name:"Failure / Abandoned",pct:16,note:"Does not launch or no traction",color:"#64748b"}];
 const GROWTH=[{name:"Users",steps:[0,100,1000,10000],val:0,fmt:n=>n.toLocaleString()},{name:"Paying Users",steps:[0,10,100,1000],val:0,fmt:n=>n.toLocaleString()},{name:"MRR",steps:[0,1000,10000,100000],val:0,fmt:n=>n===0?"$0":"$"+(n>=1000?n/1000+"k":n)}];
-const DEF_PRODUCT=[{label:"MVP Defined",done:true},{label:"Prototype Functional",done:false},{label:"AI Recommendations Working",done:false},{label:"User Accounts",done:false},{label:"Beta Ready",done:false}];
+const DEF_PRODUCT=[{label:"MVP Defined",done:true},{label:"Prototype Functional",done:true},{label:"AI Recommendations Working",done:false},{label:"User Accounts",done:false},{label:"Beta Ready",done:false}];
 const DEF_BUSINESS=[{label:"Pricing Selected",done:false},{label:"Affiliate Partners",done:false},{label:"Terms & Privacy",done:false},{label:"Revenue Tracking",done:false}];
-const DEF_TODAY=[{label:"Make prototype functional",done:false},{label:"Test sample trip input",done:false},{label:"Generate 5 travel ideas",done:false},{label:"Improve mobile layout",done:false}];
+const DEF_TODAY=[{label:"Add Anthropic API key to Railway",done:false},{label:"Confirm picks actually generate",done:false},{label:"Schedule daily batch job (cron)",done:false},{label:"Add real user auth",done:false}];
 function ls(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
 function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 let product=ls("fd_product",DEF_PRODUCT),business=ls("fd_business",DEF_BUSINESS),today=ls("fd_today",DEF_TODAY);
